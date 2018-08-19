@@ -2,10 +2,12 @@ const express = require('express')
 const app = express()
 const { port, publicKey } = require('./config')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const mainRouter = require('./routes/main')
 const movieRouter = require('./routes/movie')
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
