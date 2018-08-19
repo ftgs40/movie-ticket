@@ -6,19 +6,19 @@ const movieCollect = db.get('movies');
 
 router.get('/', (req, res) =>{
     // res.send('Hello World!')
-    movieCollect
-    .find()
-    .then(movieList => {
-      res.json(movieList);
-    });
+    // movieCollect
+    // .find()
+    // .then(movieList => {
+    //   res.json(movieList);
+    // });
     
 })
 
 router.get('/insert', (req, res) =>{
     // res.send('Hello World!')
-    movieCollect.insert({ moview: 'Aventure' }).then(insertedMessage => {
-        res.json(insertedMessage);
-    });
+    // movieCollect.insert({ moview: 'Aventure' }).then(insertedMessage => {
+    //     res.json(insertedMessage);
+    // });
     
 })
 
