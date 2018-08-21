@@ -62,7 +62,7 @@ router.get('/checkExpired',(req, res) => {
 
 });
 
-router.post('/add', (req, res)=>{
+router.post('/addxxx', (req, res)=>{
     // return res.json(insertToMovie({ moview: 'Aventure' }))
     // let data = { moview: 'Aventure' };
     // movieCollect.insert(data).then(insertedMessage => {
@@ -83,6 +83,24 @@ router.post('/upload', upload.single('productImage'), (req, res, next)=>{
     let filename = req.file.filename;
     console.log(req.file);
     res.json({ok: "OK"})
+});
+
+router.post('/add', upload.single('productImage'), (req, res, next)=>{
+
+    let filename = req.file.filename;
+    const dataInsert = {
+        name:           req.body.name,
+        description:    req.body.des,
+        price:          req.body.price,
+        pic_path:       filename,
+        start_date:     req.body.startDate,
+        expried_date:   req.body.expireDate,
+        status:         1
+    }
+    movieCollect.insert(dataInsert).then(insertedMessage => {
+        res.status(201).json({success: insertedMessage._id});
+    });
+
 });
 
 module.exports = router;
