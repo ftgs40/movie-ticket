@@ -14,6 +14,7 @@ class LandingComponent extends Component {
                 <style>{`
                 html, body {
                     background-color: #252839 !important;
+
                 }
 
                 }

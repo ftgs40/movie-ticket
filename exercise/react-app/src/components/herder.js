@@ -9,7 +9,7 @@ class Herder extends Component {
         return (
             <Container>
 
-    <style>{`
+    {/* <style>{`
       p {
         align-content: center;
         background-color: #495285;
@@ -24,9 +24,9 @@ class Herder extends Component {
         text-align: center;
       }
     }
-    `}</style>
+    `}</style> */}
 
-    <Header as='h2' icon inverted textAlign='center'>
+    <Header as='h2' icon inverted textAlign='center' style={{marginTop:'20px'}}>
       <Icon name='grid layout' />
       {cinemaName}
       {/* <Header.Subheader>
