@@ -8,7 +8,10 @@ class LandingAdmin extends Component{
 
     constructor(props){
       super(props);
-      this.state = {movieList: []};
+      this.state = {
+          movieList: [],
+          countMoview: 0,
+        };
 
     //   this.clickLogin   = this.clickLogin.bind(this);
     //   this.setUser  = this.setUser.bind(this);
@@ -20,11 +23,14 @@ class LandingAdmin extends Component{
           .then(res => {
             console.log(res.data)
             const movieList = res.data;
-            this.setState({ movieList:movieList });
+            const countData = movieList.length;
+            this.setState({ movieList:movieList , countMoview:countData});
         });
     }
 
     render() {
+
+   
         const items = this.state.movieList.map((item,i)=>{
             return(
                 <Table.Row key={i}>
@@ -38,9 +44,9 @@ class LandingAdmin extends Component{
                 </Table.Row>
             )
         })
-        
+
         return (
-            <div style={{paddingTop:'30px'}}>
+            <div style={{paddingTop:'30px',paddingBottom:'30px'}}>
                 <Container>
                     <Header as='h1' dividing>
                         All Movie

@@ -14,6 +14,7 @@ class Body extends Component {
                             {  value: 'date', text: 'Date' }, 
                             {  value: 'price', text: 'Price' }, 
                         ];
+                        
         this.handleChange = this.handleChange.bind(this);
     }
 

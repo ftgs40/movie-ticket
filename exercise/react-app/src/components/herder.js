@@ -5,7 +5,7 @@ import { Container, Divider, Grid, Header, Icon } from 'semantic-ui-react'
 class Herder extends Component {
     
     render() {
-        const cinemaName = 'MY CINEMA';
+        const cinemaName = 'MY CENIMA';
         return (
             <Container>
 
@@ -29,9 +29,9 @@ class Herder extends Component {
     <Header as='h2' icon inverted textAlign='center'>
       <Icon name='grid layout' />
       {cinemaName}
-      <Header.Subheader>
+      {/* <Header.Subheader>
         This page contains some helpful examples that can be usefull for advanced layouts.
-      </Header.Subheader>
+      </Header.Subheader> */}
     </Header>
     <Divider />
 
