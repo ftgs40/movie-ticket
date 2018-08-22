@@ -19,6 +19,8 @@ const schema = Joi.object().keys({
     des: Joi.string().min(1).max(500).required()
 });
 
+const moment = require('moment');
+
 router.get('/time', (req, res) => {
     // res.send('movie List')
     movieCollect.find({status: 1})
@@ -91,10 +93,10 @@ router.post('/add', upload.single('productImage'), (req, res, next)=>{
     const dataInsert = {
         name:           req.body.name,
         description:    req.body.des,
-        price:          req.body.price,
+        price:          parseInt(req.body.price),
         pic_path:       filename,
-        start_date:     req.body.startDate,
-        expried_date:   req.body.expireDate,
+        start_date:     new Date(req.body.startDate),
+        expried_date:   new Date(req.body.expireDate),
         status:         1
     }
     movieCollect.insert(dataInsert).then(insertedMessage => {

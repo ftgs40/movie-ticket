@@ -6,7 +6,9 @@ const cors = require('cors')
 
 const mainRouter = require('./routes/main')
 const movieRouter = require('./routes/movie')
+const imgRoute = require('./img_route');
 
+app.use( express.static('public'))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -22,6 +24,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // });
 app.use('/api', mainRouter);
 app.use('/api/movie/', movieRouter);
+app.use('/image', imgRoute)
+
 
 app.listen(port, () => console.log(`listening on port ${port}!`))
 
