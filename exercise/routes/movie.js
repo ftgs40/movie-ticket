@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const movieCollect = db.get('movies');
 const Joi = require('joi');
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -14,94 +13,87 @@ const storage = multer.diskStorage({
   });
 const upload = multer({storage: storage})
 
-const schema = Joi.object().keys({
-    name: Joi.string().min(1).max(100).required(),
-    des: Joi.string().min(1).max(500).required()
-});
-
-const moment = require('moment');
+//collection
+const movieCollect = db.get('movies');
+const transCollect = db.get('trans');
+const conditionActive = { expried_date: { $gte: new Date() } , start_date: { $lte: new Date() }, status: { $eq: 1 } };
 
 router.get('/time', (req, res) => {
-    // res.send('movie List')
-    movieCollect.find({status: 1})
+    movieCollect.find(conditionActive)
         .then(movieList => {
             res.json(movieList);
         });
 })
 
-router.get('/date/:sort*?', (req, res) => {
+router.get('/sortPrice/:sort*?', (req, res) => {
     let sort = {}
     if(typeof req.params.sort != "undefined"){
-        sort = {sort: {start_date: parseInt(req.params.sort)}}
+        let isSort ;
+        if(req.params.sort == "ce"){
+            isSort = 1
+        }else{
+            isSort = -1
+        }
+        sort = {sort: {price: isSort}}
     }
-    movieCollect.find({}, sort)
+    movieCollect.find(conditionActive, sort)
         .then(movieList => {
             res.json(movieList);
-        });
+    });
 })
 
-router.get('/price/:sort*?', (req, res) => {
+router.get('/sortName/:sort*?', (req, res) => {
     let sort = {}
     if(typeof req.params.sort != "undefined"){
-        sort = {sort: {price: parseInt(req.params.sort)}}
+        let isSort ;
+        if(req.params.sort == "az"){
+            isSort = 1
+        }else{
+            isSort = -1
+        }
+        sort = {sort: {name: isSort}}
     }
-    movieCollect.find({}, sort)
+    movieCollect.find(conditionActive, sort)
         .then(movieList => {
             res.json(movieList);
-        });
+    });
 })
 
 router.get('/search/:name', (req, res) => {
     let name = req.params.name;
     movieCollect.find(
-        { name: new RegExp(".*"+name+"*.", 'i') })
+        { name: new RegExp(name, 'i') ,expried_date: { $gte: new Date() } , start_date: { $lte: new Date() },status: { $eq: 1 } })
         .then(movieList => {
             res.json(movieList);
         });
 });
 
-router.get('/checkExpired',(req, res) => {
-
+const schemaAdd = Joi.object().keys({
+    name: Joi.string().min(1).max(100).required(),
+    des: Joi.string().min(1).max(500).required(),
+    price: Joi.string().min(1).max(500).required(),
+    startDate: Joi.required(),
+    expireDate: Joi.required()
 });
-
-router.post('/addxxx', (req, res)=>{
-    // return res.json(insertToMovie({ moview: 'Aventure' }))
-    // let data = { moview: 'Aventure' };
-    // movieCollect.insert(data).then(insertedMessage => {
-    //     res.json(insertedMessage);
-    // });
-    const result = Joi.validate(req.body, schema);
+router.post('/add', upload.single('productImage'), (req, res, next)=>{
+    const result = Joi.validate(req.body, schemaAdd);
     if (result.error === null) {
-        movieCollect.insert(req.body).then(insertedMessage => {
-                res.status(201).json({success: insertedMessage._id});
+        let filename = req.file.filename;
+        const dataInsert = {
+            name:           req.body.name,
+            description:    req.body.des,
+            price:          parseInt(req.body.price),
+            pic_path:       filename,
+            start_date:     new Date(req.body.startDate),
+            expried_date:   new Date(req.body.expireDate),
+            status:         1
+        }
+        movieCollect.insert(dataInsert).then(insertedMessage => {
+            res.status(201).json({success: insertedMessage._id});
         });
     }else {
         res.json({error: "Validation Error"})
     }
-});
-
-router.post('/upload', upload.single('productImage'), (req, res, next)=>{
-    let path = req.file.path;
-    let filename = req.file.filename;
-    console.log(req.file);
-    res.json({ok: "OK"})
-});
-
-router.post('/add', upload.single('productImage'), (req, res, next)=>{
-
-    let filename = req.file.filename;
-    const dataInsert = {
-        name:           req.body.name,
-        description:    req.body.des,
-        price:          parseInt(req.body.price),
-        pic_path:       filename,
-        start_date:     new Date(req.body.startDate),
-        expried_date:   new Date(req.body.expireDate),
-        status:         1
-    }
-    movieCollect.insert(dataInsert).then(insertedMessage => {
-        res.status(201).json({success: insertedMessage._id});
-    });
 
 });
 
@@ -112,6 +104,34 @@ router.get('/detail/:id', (req, res) => {
         .then(movieList => {
             res.json(movieList);
         });
+});
+
+const schemaTran = Joi.object().keys({
+    movie_name: Joi.string().min(1).max(100).required(),
+    movie_id: Joi.string().min(1).max(500).required(),
+    priceInput: Joi.required(),
+    totalPrice: Joi.required(),
+    ticketTotal: Joi.required()
+});
+
+router.post('/transections', (req, res)=>{
+    // console.log( typeof req.body);
+    const result = Joi.validate(req.body, schemaTran);
+    if (result.error === null) {
+        let data = {
+            movie_name:     req.body.movie_name,
+            movie_id:       req.body.movie_id,
+            priceInput:     req.body.priceInput,
+            totalPrice:     req.body.totalPrice,
+            ticketTotal:    req.body.ticketTotal,
+            date_time:      new Date
+        };
+        transCollect.insert(data).then(insertedMessage => {
+            res.status(201).json({success: insertedMessage._id});
+        });
+    }else{
+        res.json({error: "Validation Error"})
+    }
 });
 
 module.exports = router;
