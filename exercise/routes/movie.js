@@ -111,7 +111,10 @@ const schemaTran = Joi.object().keys({
     movie_id: Joi.string().min(1).max(500).required(),
     priceInput: Joi.required(),
     totalPrice: Joi.required(),
-    ticketTotal: Joi.required()
+    ticketTotal: Joi.required(),
+    redirectHome: Joi.optional(),
+    showRefund: Joi.optional(),
+    pic_path:   Joi.optional()
 });
 
 router.post('/transections', (req, res)=>{
@@ -128,6 +131,21 @@ router.post('/transections', (req, res)=>{
         };
         transCollect.insert(data).then(insertedMessage => {
             res.status(201).json({success: insertedMessage._id});
+        });
+    }else{
+        res.json({error: result.error})
+    }
+});
+
+const schemaDel = Joi.object().keys({
+    id: Joi.string().min(1).max(100).required()
+});
+router.post('/delete', (req, res)=>{
+
+    const result = Joi.validate(req.body, schemaDel);
+    if (result.error === null) {
+        movieCollect.update({_id: req.body.id}, { $set: { status : 0  } }, false, true ).then(success => {
+            res.json(success);
         });
     }else{
         res.json({error: "Validation Error"})

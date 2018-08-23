@@ -7,7 +7,7 @@ class Admin extends Component{
 
     constructor(props){
       super(props);
-      this.state = {username: '@dmin', password: '@dmin1234', isLogin: false};
+      this.state = {username: '', password: '', isLogin: false};
       
 
       this.clickLogin   = this.clickLogin.bind(this);

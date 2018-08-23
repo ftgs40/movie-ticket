@@ -33,7 +33,27 @@ class LandingAdmin extends Component{
         }
     }
 
+    clickDelete(id, name){
+        let conf = window.confirm("คุณต้องการลบหนังเรื่อง "+name+" ใช่หรือไม่ ?")
+        if(conf){
+            const data = {id:id};
+            console.log(data)
+            const headers = {headers: {
+                'authorization': myConfig.publicKey,
+            }}
+            axios.post(`${myConfig.siteUrlServer}/api/movie/delete`, data, headers)
+            .then(res => {
+                console.log(res.data)
+                this.getMovieList()
+            });
+        }
+    }
+
     componentDidMount() {
+        this.getMovieList();
+    }
+
+    getMovieList(){
         const headers = {headers: {
             'authorization': myConfig.publicKey,
         }}
@@ -58,7 +78,7 @@ class LandingAdmin extends Component{
                     <Table.Cell>{moment(item.expried_date).format('DD/YYYY/MM')}</Table.Cell>
                     <Table.Cell>{item.price}</Table.Cell>
                     <Table.Cell textAlign="center">
-                        <a><Icon name='trash' /></a>
+                        <a onClick={()=>this.clickDelete(item._id,item.name)}><Icon name='trash' /></a>
                     </Table.Cell>
                 </Table.Row>
             )
