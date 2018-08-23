@@ -50,5 +50,7 @@ OpenApp --> http://localhost:3000
 เหตุผลที่ใช้  : เพราะ Digital Ocean สามารถจัดการ web และค่า config ต่างๆเองได้ (เราคุม server เอง) 
 
 URL :  http://178.128.51.24:3000/
+
+เข้าใช้งานหลังบ้านได้ที่  http://178.128.51.24:3000/admin  (เพิ่ม/ลบ Movie) {user: @dmin, pass: @dmin1234}
 ##
 
