@@ -105,5 +105,14 @@ router.post('/add', upload.single('productImage'), (req, res, next)=>{
 
 });
 
+router.get('/detail/:id', (req, res) => {
+    let id = req.params.id;
+    movieCollect.find(
+        { _id: id })
+        .then(movieList => {
+            res.json(movieList);
+        });
+});
+
 module.exports = router;
 

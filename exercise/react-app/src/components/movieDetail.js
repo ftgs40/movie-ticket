@@ -2,31 +2,53 @@ import React, { Component } from 'react';
 import { Container, Divider, Grid, Button, Icon, Input } from 'semantic-ui-react'
 import { Link } from "react-router-dom";
 import Herder from './herder';
+import config from '../config';
+import axios from 'axios';
 
 class MovieDetailComponent extends Component {
 
     constructor(props){
         super(props);
-        console.log(props);
+        // console.log(props);
+        // console.log(props.match.params.id);
         this.state = {
-            price:      150,
-            ticketTotal:  1,
-            totalPrice:   150
+            price:          150,
+            ticketTotal:    1,
+            totalPrice:     150,
+            movie_name:     '',
+            movie_id:       props.match.params.id,
+            description:    '',
+            pic_path:       ''
         };
-        // console.log(localStorage.getItem('detailState'));
-
-        console.log(localStorage.getItem('dfsdf'));
         
-
         this.handelMinusTotal   = this.handelMinusTotal.bind(this);
         this.handelPlusTotal    = this.handelPlusTotal.bind(this);
         this.clickBuy           = this.clickBuy.bind(this);
     }
 
     componentDidMount(){
+        axios.get(`${config.siteUrlServer}/api/movie/detail/${this.state.movie_id}`)
+          .then(res => {
+            console.log(res.data)
+            this.setState({
+                price:      res.data[0].price,
+                totalPrice: res.data[0].price,
+                movie_name: res.data[0].name,
+                description:res.data[0].description,
+                pic_path:   res.data[0].pic_path
+            })
+            this.setStorageForReturn(res.data[0]._id);
+        });
+    }
+
+    setStorageForReturn(_id){
         let stateDetail = localStorage.getItem('detailState');
-        if(stateDetail !== null ){
-            this.setState(JSON.parse(stateDetail));
+            if(stateDetail !== null ){
+                let data = JSON.parse(stateDetail);
+                console.log("this ",data)
+                if(data.movie_id == _id){
+                    this.setState(JSON.parse(stateDetail));
+                }
         }
     }
 
@@ -36,7 +58,6 @@ class MovieDetailComponent extends Component {
             ticketTotal: (this.state.ticketTotal-1),
             totalPrice: ((this.state.ticketTotal-1)*this.state.price)
         });
-
     }
 
     handelPlusTotal(){
@@ -88,11 +109,11 @@ class MovieDetailComponent extends Component {
                 }
                 `}</style>
                 <Herder/>
-                <h1>The God of Thor </h1>
+                <h1 style={{fontSize:"35px"}}>{this.state.movie_name}</h1>
                 <Grid columns='equal' style={{marginBottom:'20px'}}>
                     <Grid.Row columns='equal'>
                         <Grid.Column >
-                        <img style={{width:"100%"}} src="http://i.kapook.com/ninn/n20-0311/280311_thor_ver_01.jpg" />
+                        <img style={{width:"100%"}} src={`${config.siteUrlServer}/image/${this.state.pic_path}`} />
                         </Grid.Column>
                         <Grid.Column className="boxSaleMain">
                             <h1 className="yell">ซื้อตั๋วหนัง</h1>
@@ -114,9 +135,9 @@ class MovieDetailComponent extends Component {
                             <div style={{textAlign:'center',marginBottom:'40px',marginTop:'40px'}} >
                                 <h1>รวม <span className="yell" >{totalPrice}</span> บาท</h1>
                             </div>
-                            {/* <Link to={`payment`}> */}
+                            <Link to="/payment">
                                 <Button className="btnBottom" size='massive' color='red' fluid onClick={this.clickBuy} > <Icon  name='shopping cart' /> ซื้อ</Button>
-                            {/* </Link> */}
+                            </Link>
                             
 
                         </Grid.Column>
@@ -124,11 +145,7 @@ class MovieDetailComponent extends Component {
                     <Divider />
                     <Grid.Row ><h1>เรื่องย่อ</h1></Grid.Row>
                     <Grid.Row columns='equal' className="boxDes" style={{padding:'20px'}}>
-                     ตู้เซฟสติกเกอร์ แมชีนอุปสงค์เทรนด์คันธาระแฟนซี เช็งเม้ง เอ็นจีโอแฟล็ตโมหจริตเกรด จตุคามแป๋วแซ็กออยล์รัม อาข่าเบิร์ดโปร คอลัมน์ซีนนายพรานแอ๊บแบ๊ว จิ๊กซอว์ล็อบบี้แอ็คชั่นฟีเวอร์เวอร์ มินท์แอสเตอร์ออโต้มอบตัวสจ๊วต ผลไม้ละอ่อน รีสอร์ตไชน่าเนอะไลฟ์โดมิโน แมชีน ติงต๊องราชบัณฑิตยสถาน เนิร์สเซอรี่ครัวซองต์หน่อมแน้มไคลแม็กซ์ บอยคอต โลชั่นว่ะ
-
-เดอะแจ๊กพอตต่อยอด เคลียร์สถาปัตย์รันเวย์อาว์แฟรี่ สกายสแควร์ฟรังก์แป๋ว แอนด์ทอมโง่เขลาคอนโดอัลบัม ฮ็อตด็อก ไทยแลนด์เคอร์ฟิวมอลล์ เซอร์ไพรส์แฮนด์โมหจริตเทเลกราฟมาราธอน ม้าหินอ่อน สตรอเบอร์รีเฮียซิตี้ เฟิร์มฮิมหภาคจัมโบ้เบอร์เกอร์ อุปัทวเหตุบลูเบอร์รี่ฮิปโป สมาพันธ์หมวย อัตลักษณ์ซิมพาสเจอร์ไรส์คลับ เพนตากอนวัคค์ ซีอีโอ สเตชั่นจอหงวนซูเปอร์โบรชัวร์
-
-ชนะเลิศรอยัลตี้ฮาร์ดรุมบ้า สตูดิโอฮันนีมูนแหวว คอลัมน์สแควร์ตาปรือม้านั่ง คาร์โก้พีเรียด เป็นไงเซนเซอร์ เจล คอนแทคสุริยยาตร ซี้แมชชีนคาราโอเกะแทงโก้ไฮเทค อพาร์ทเมนต์อพาร์ทเมนต์รามเทพธรรมาภิบาลแคมเปญ ทำงานปูอัดฟรุตเพาเวอร์ ซี้รีไทร์มั้งไฮแจ็ค ทีวีว้อยวาไรตี้เดอะแยมโรล วีซ่าสไลด์แอโรบิคเคลียร์ แคมป์ราเมนคลับวอเตอร์แบด สไปเดอร์คันธาระเอนทรานซ์ ว่ะคีตปฏิภาณแดนซ์จุ๊ย
+                     {this.state.description}
                     </Grid.Row>
                     
                 </Grid>

@@ -3,6 +3,7 @@ import { Container, Divider, Grid, Header, Icon } from 'semantic-ui-react'
 import axios from 'axios';
 import { Link } from "react-router-dom";
 // import { Redirect,browserHistory  } from "react-router-dom";
+import config from '../config';
 
 class MovieList extends Component {
 
@@ -17,7 +18,7 @@ class MovieList extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:3001/api/movie/time`)
+        axios.get(`${config.siteUrlServer}/api/movie/time`)
           .then(res => {
             console.log(res.data)
             const movieList = res.data;
@@ -37,14 +38,17 @@ class MovieList extends Component {
         const items_one = this.state.movieList.map((item,i)=>{
             return(
                 <Grid.Column key={i}>
-                    <img style={{maxHeight:'500px',paddingTop:'30px'}} 
-                         src={`http://localhost:3001/image/${item.pic_path}`}
+                    <Link to={`detail/${item._id}`}>
+                    <img 
+                        style={{maxHeight:'500px',paddingTop:'30px',width:"100%"}} 
+                         src={`${config.siteUrlServer}/image/${item.pic_path}`}
                          onClick={() => this.clickDetail(item._id)}
                     />
-                    
-                    <Link to={`admin/${item._id}`}> 
-                    <h2 style={{color:'white'}} onClick={() => this.clickDetail(item._id)}>{item.name}</h2>
                     </Link>
+                    <Link to={`detail/${item._id}`}> 
+                    <h3 style={{color:'white'}} onClick={() => this.clickDetail(item._id)}>{item.name}</h3>
+                    </Link>
+                    <p style={{color:"#c2c8d1"}}>{item.price} baht</p>
                 </Grid.Column> 
             )
         })

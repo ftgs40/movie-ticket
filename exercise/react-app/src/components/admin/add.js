@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Redirect  } from "react-router-dom";
+import myConfig from '../../config';
 
 class AddMoviewAdmin extends Component{
 
@@ -50,7 +51,7 @@ class AddMoviewAdmin extends Component{
         data.append("expireDate",  moment(this.state.expireDate).format('YYYY-MM-DD').toString());
 
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-        axios.post('http://localhost:3001/api/movie/add', data, config).then((response) => {
+        axios.post(`${myConfig.siteUrlServer}/api/movie/add`, data, config).then((response) => {
             console.log(response); 
             // this.props.history.push('/landing');
             this.setState({isReDirectLanding: true});

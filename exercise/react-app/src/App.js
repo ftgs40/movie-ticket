@@ -19,7 +19,7 @@ class App extends Component {
         <div>
           <Switch>
             <Route path="/" exact component={LandingComponent} />
-            <Route path="/detail" exact component={MovieDetailComponent} />
+            <Route path="/detail/:id" exact component={MovieDetailComponent} />
             <Route path="/payment" exact component={MoviePayComponent} />
             <Route path="/about" exact component={LandingComponent} />
 
