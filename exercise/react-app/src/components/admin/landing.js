@@ -1,25 +1,43 @@
 import React,{ Component } from 'react';
 import { Container,Button, Form, Grid, Header, Segment, Label, Menu, Table, Icon } from 'semantic-ui-react'
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link,Redirect } from "react-router-dom";
 import moment from 'moment'
+import myConfig from '../../config';
 
 class LandingAdmin extends Component{
 
     constructor(props){
-      super(props);
-      this.state = {
+        super(props);
+        this.state = {
           movieList: [],
           countMoview: 0,
+          adminPer: this.checkAdminPer()
         };
+
 
     //   this.clickLogin   = this.clickLogin.bind(this);
     //   this.setUser  = this.setUser.bind(this);
     //   this.setPass  = this.setPass.bind(this);
     }
 
+    checkAdminPer(){
+        let aut_admin = localStorage.getItem('adminAut');
+        if(aut_admin == null){
+            return false
+        }else{
+            if( new Date().valueOf() > parseInt(aut_admin) ){
+                return false
+            }
+            return true
+        }
+    }
+
     componentDidMount() {
-        axios.get(`http://localhost:3001/api/movie/time`)
+        const headers = {headers: {
+            'authorization': myConfig.publicKey,
+        }}
+        axios.get(`${myConfig.siteUrlServer}/api/movie/time`, headers)
           .then(res => {
             console.log(res.data)
             const movieList = res.data;
@@ -29,15 +47,16 @@ class LandingAdmin extends Component{
     }
 
     render() {
-
+        if(!this.state.adminPer) return (<Redirect to="/"/>)
    
         const items = this.state.movieList.map((item,i)=>{
             return(
                 <Table.Row key={i}>
                     <Table.Cell textAlign="center">{(i+1)}</Table.Cell>
-                    <Table.Cell><a href="javascript:void(0)">{item.name}</a></Table.Cell>
+                    <Table.Cell>{item.name}</Table.Cell>
                     <Table.Cell>{moment(item.start_date).format('DD/YYYY/MM')}</Table.Cell>
                     <Table.Cell>{moment(item.expried_date).format('DD/YYYY/MM')}</Table.Cell>
+                    <Table.Cell>{item.price}</Table.Cell>
                     <Table.Cell textAlign="center">
                         <a><Icon name='trash' /></a>
                     </Table.Cell>
@@ -49,7 +68,7 @@ class LandingAdmin extends Component{
             <div style={{paddingTop:'30px',paddingBottom:'30px'}}>
                 <Container>
                     <Header as='h1' dividing>
-                        All Movie
+                        All Movies
                     </Header>
                     <Link to="/admin/movie_add">
                         <Button>+ Add Movie</Button>
@@ -62,6 +81,7 @@ class LandingAdmin extends Component{
                             <Table.HeaderCell>Name</Table.HeaderCell>
                             <Table.HeaderCell>Start Date</Table.HeaderCell>
                             <Table.HeaderCell>Expired Date</Table.HeaderCell>
+                            <Table.HeaderCell>Price</Table.HeaderCell>
                             <Table.HeaderCell></Table.HeaderCell>
                         </Table.Row>
                         </Table.Header>

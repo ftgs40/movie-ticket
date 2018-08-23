@@ -3,7 +3,7 @@ import { Container, Divider, Grid, Header, Icon } from 'semantic-ui-react'
 import axios from 'axios';
 import { Link } from "react-router-dom";
 // import { Redirect,browserHistory  } from "react-router-dom";
-import config from '../config';
+import myConfig from '../config';
 
 class MovieList extends Component {
 
@@ -14,11 +14,35 @@ class MovieList extends Component {
             movieList: [],
             countMoview: 0,
         };
-        this.clickDetail = this.clickDetail.bind(this);
     }
 
     componentDidMount() {
-        axios.get(`${config.siteUrlServer}/api/movie/time`)
+        this.getMovieList();
+    }
+
+    componentWillReceiveProps(nextProps){
+        // console.log(nextProps);
+        this.getMovieList(nextProps.sort, nextProps.subSort);
+    }
+
+    getMovieList(sort = '',subSort = ''){
+        let suffix = '/api/movie/time';
+        if(sort != ""){
+            if(subSort == '') return false;
+            if(sort == "name"){
+                suffix = '/api/movie/sortName/'+subSort;
+            }else if(sort == "price"){
+                suffix = '/api/movie/sortPrice/'+subSort;
+            }else if(sort == "searchName"){
+                suffix = '/api/movie/search/'+subSort;
+            }else{
+                return false;
+            }
+        }
+        const headers = {headers: {
+                            'authorization': myConfig.publicKey,
+                        }}
+        axios.get(myConfig.siteUrlServer+suffix, headers)
           .then(res => {
             console.log(res.data)
             const movieList = res.data;
@@ -26,60 +50,29 @@ class MovieList extends Component {
             this.setState({ movieList:movieList , countMoview:countData});
         });
     }
-
-    clickDetail(id){
-     
-            console.log("vv",id);
-            // this.setState({isLogin: true});
-    }
     
     render() {
         
-        const items_one = this.state.movieList.map((item,i)=>{
+        let items_one = this.state.movieList.map((item,i)=>{
             return(
                 <Grid.Column key={i}>
                     <Link to={`detail/${item._id}`}>
                     <img 
                         style={{maxHeight:'500px',paddingTop:'30px',width:"100%"}} 
-                         src={`${config.siteUrlServer}/image/${item.pic_path}`}
-                         onClick={() => this.clickDetail(item._id)}
+                         src={`${myConfig.siteUrlServer}/image/${item.pic_path}`}
                     />
                     </Link>
                     <Link to={`detail/${item._id}`}> 
-                    <h3 style={{color:'white'}} onClick={() => this.clickDetail(item._id)}>{item.name}</h3>
+                    <h3 style={{color:'white'}} >{item.name}</h3>
                     </Link>
                     <p style={{color:"#c2c8d1"}}>{item.price} baht</p>
                 </Grid.Column> 
             )
         })
-
-        const items = (movieList) => {
-            let table = []
-            // Outer loop to create parent
-            if(movieList.length == 0) return false;
-    
-            console.log('movieList',movieList);
-            for (let i = 0; i < 2; i++) {
-                let children = []
-                //Inner loop to create children
-                for (let j = 0; j < 3; j++) {
-                    let countCal = ((i+1)*3)-3;
-                    // if(typeof this.state.movieList[j].pic_path !== "undefined"){
-                        // let path = this.movieList[(j+countCal)].pic_path;
-                        // console.log('path:',i,' aray',(j+countCal));
-                    // }
-                    // children.push(<Grid.Column><img src={`http://localhost:3001/image/${path}`}/></Grid.Column>)
-                    // children.push(<Grid.Column>xx</Grid.Column>)
-                }
-                //Create the parent and add the children
-                table.push(<Grid.Row>{children}</Grid.Row>)
-            }
-            
-            return table
-          }
-
-
-  
+        let notFound 
+        if(items_one ==""){
+            notFound = <div style={{textAlign:"center",color:"white"}}><h1>..Movie not found</h1></div>
+        }
 
         return (
             <div>
@@ -102,6 +95,7 @@ class MovieList extends Component {
                         </Grid.Column>
                     </Grid.Row> */}
                 </Grid>
+                {notFound}
         </div>
         );
     }

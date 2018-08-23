@@ -27,7 +27,7 @@ class Herder extends Component {
     `}</style> */}
     <Link to="/">
     <Header as='h2' icon inverted textAlign='center' style={{marginTop:'20px'}}>
-      <Icon name='grid layout' />
+      <Icon color="yellow" name='fort awesome alternate' />
       {cinemaName}
       {/* <Header.Subheader>
         This page contains some helpful examples that can be usefull for advanced layouts.

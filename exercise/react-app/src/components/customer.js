@@ -4,9 +4,6 @@ import { Container, Divider, Grid, Header, Icon } from 'semantic-ui-react'
 import Herder from './herder';
 import Body from './body';
 
-const home = () => <h1>home</h1>
-const about = () => <h1>about</h1>
-
 class LandingComponent extends Component {
     render() {
         return (

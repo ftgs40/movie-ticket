@@ -27,7 +27,10 @@ class MovieDetailComponent extends Component {
     }
 
     componentDidMount(){
-        axios.get(`${config.siteUrlServer}/api/movie/detail/${this.state.movie_id}`)
+        const headers = {headers: {
+            'authorization': config.publicKey,
+        }}
+        axios.get(`${config.siteUrlServer}/api/movie/detail/${this.state.movie_id}`, headers)
           .then(res => {
             console.log(res.data)
             this.setState({
@@ -89,8 +92,9 @@ class MovieDetailComponent extends Component {
                     position: absolute;
                     bottom: 0;
                     left: 0;
-                    margin-bottom: 20px;
+                    margin-bottom: 1px;
                 }
+       
                 .boxSale{
                     padding-bottom: 20px;
                     padding-top: 20px;
@@ -109,6 +113,7 @@ class MovieDetailComponent extends Component {
                 }
                 `}</style>
                 <Herder/>
+
                 <h1 style={{fontSize:"35px"}}>{this.state.movie_name}</h1>
                 <Grid columns='equal' style={{marginBottom:'20px'}}>
                     <Grid.Row columns='equal'>
@@ -135,9 +140,18 @@ class MovieDetailComponent extends Component {
                             <div style={{textAlign:'center',marginBottom:'40px',marginTop:'40px'}} >
                                 <h1>รวม <span className="yell" >{totalPrice}</span> บาท</h1>
                             </div>
+                            <div className="btnBottom" style={{width:'100%'}}>
+                            
                             <Link to="/payment">
-                                <Button className="btnBottom" size='massive' color='red' fluid onClick={this.clickBuy} > <Icon  name='shopping cart' /> ซื้อ</Button>
+                                <Button  size='massive' color='green' fluid onClick={this.clickBuy} > <Icon  name='shopping cart' /> ซื้อ</Button>
                             </Link>
+                            <Link to="/">
+                                <Button  size='massive' color='yellow' fluid onClick={this.clickBuy} ><Icon  name='home' /> กลับไปหน้าแรก</Button>
+                            </Link>
+                             </div>
+                            {/* <Link to="/payment">
+                                <Button className="btnBottom" size='massive' color='red' fluid onClick={this.clickBuy} > <Icon  name='shopping cart' /> ซื้อ</Button>
+                            </Link> */}
                             
 
                         </Grid.Column>

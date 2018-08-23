@@ -26,7 +26,6 @@ class App extends Component {
             <Route path="/admin" exact component={Admin} />
             <Route path="/admin/movie_landing" exact component={LandingAdmin} />
             <Route path="/admin/movie_add" exact component={AddMoviewAdmin} />
-            <Route path="/admin/movie_add" exact component={AddMoviewAdmin} />
           </Switch>
         </div>
       </BrowserRouter>

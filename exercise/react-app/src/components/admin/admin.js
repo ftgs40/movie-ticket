@@ -1,12 +1,14 @@
 import React,{ Component } from 'react';
 import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 import { Redirect  } from "react-router-dom";
+import moment from "moment";
 
 class Admin extends Component{
 
     constructor(props){
       super(props);
       this.state = {username: '@dmin', password: '@dmin1234', isLogin: false};
+      
 
       this.clickLogin   = this.clickLogin.bind(this);
       this.setUser  = this.setUser.bind(this);
@@ -16,12 +18,15 @@ class Admin extends Component{
     clickLogin(){
       const user = '@dmin';
       const pass = '@dmin1234'
-      // console.log(this.state);
 
       if(this.state.username == user && this.state.password == pass){
+          let date = new Date().valueOf()+(1200*1000);
+          localStorage.setItem('adminAut',date);
           console.log("login Success");
           this.props.history.push('/admin');
           this.setState({isLogin: true});
+      }else{
+        alert("ข้อมูลไม่ถูกต้อง")
       }
     }
     setUser(event){

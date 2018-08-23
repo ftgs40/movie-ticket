@@ -16,13 +16,26 @@ class AddMoviewAdmin extends Component{
             expireDate: moment().add(7, 'days'),
             picUpload: new FormData(),
             desTextarea: '',
-            isReDirectLanding: false
+            isReDirectLanding: false,
+            adminPer: this.checkAdminPer()
         };
         this.handleChangeDateStart = this.handleChangeDateStart.bind(this);
         this.handleChangeDateExpire = this.handleChangeDateExpire.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFileChange = this.handleFileChange.bind(this);
         this.handleInputTextarea = this.handleInputTextarea.bind(this);
+    }
+
+    checkAdminPer(){
+        let aut_admin = localStorage.getItem('adminAut');
+        if(aut_admin == null){
+            return false
+        }else{
+            if( new Date().valueOf() > parseInt(aut_admin) ){
+                return false
+            }
+            return true
+        }
     }
 
     handleChangeDateStart(date) {
@@ -50,8 +63,8 @@ class AddMoviewAdmin extends Component{
         data.append("startDate",  moment(this.state.startDate).format('YYYY-MM-DD').toString());
         data.append("expireDate",  moment(this.state.expireDate).format('YYYY-MM-DD').toString());
 
-        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-        axios.post(`${myConfig.siteUrlServer}/api/movie/add`, data, config).then((response) => {
+        const headers = { headers: { 'Content-Type': 'multipart/form-data','authorization': myConfig.publicKey } };
+        axios.post(`${myConfig.siteUrlServer}/api/movie/add`, data, headers).then((response) => {
             console.log(response); 
             // this.props.history.push('/landing');
             this.setState({isReDirectLanding: true});
@@ -66,6 +79,7 @@ class AddMoviewAdmin extends Component{
     }
 
     render() {
+        if(!this.state.adminPer) return (<Redirect to="/"/>)
         if(this.state.isReDirectLanding){
             return (<Redirect to="/admin/movie_landing"/>)
         }else{
@@ -81,7 +95,7 @@ class AddMoviewAdmin extends Component{
       <input 
         placeholder='Movie Name'
         ref={input=>this.name = input}   
-         
+         required
        />
     </Form.Field>
 
@@ -90,18 +104,18 @@ class AddMoviewAdmin extends Component{
         <TextArea 
             placeholder='Movie Description' 
             onChange={this.handleInputTextarea}
-            
+            required
         />
     </Form.Field>
 
     <Form.Field>
-      <label>Price *</label>
-      <input placeholder='Price'  ref={input=>this.price = input}  />
+      <label>Price * (จำนวนเต็ม)</label>
+      <input placeholder='Price' pattern="[0-9]*" required ref={input=>this.price = input}  />
     </Form.Field>
 
     <Form.Field>
         <label>Upload Poster</label>
-        <input name="file" type="file" onChange={this.handleFileChange}/>
+        <input name="file" type="file" required onChange={this.handleFileChange}/>
     </Form.Field>
 
     <Form.Field>
@@ -110,6 +124,7 @@ class AddMoviewAdmin extends Component{
             selected={this.state.startDate}
             onChange={this.handleChangeDateStart}
             dateFormat="DD/MM/YYYY"
+            required
         />
     </Form.Field>
 
@@ -119,6 +134,7 @@ class AddMoviewAdmin extends Component{
             selected={this.state.expireDate}
             onChange={this.handleChangeDateExpire}
             dateFormat="DD/MM/YYYY"
+            required
         />
     </Form.Field>
     
