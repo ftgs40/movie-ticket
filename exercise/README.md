@@ -26,8 +26,10 @@
 
 ## Architecture Design
 
+![alt text](http://178.128.51.24:3001/image/thinkNet.jpg)
+
 ## Installation 
-เครื่องต้องมี NodeJS, MongoDB และ Git
+ต้องมี NodeJS, MongoDB และ Git ก่อน
 
 1. git clone https://github.com/ftgs40/movie-ticket.git
 2. cd movie-ticket/exercise/
