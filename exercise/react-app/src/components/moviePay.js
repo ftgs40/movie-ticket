@@ -58,7 +58,7 @@ class MoviePayComponent extends Component {
             alert("คุณจ่ายเงินไม่ครบ")
             return false;
         } 
-        this.setState({showRefund: true})
+        
         this.sentData(this.state)
         localStorage.removeItem('detailState');
     }
@@ -70,6 +70,12 @@ class MoviePayComponent extends Component {
         }}
         axios.post(`${myConfig.siteUrlServer}/api/movie/transections`, data, headers ).then((response) => {
             console.log('axios : ',response); 
+            if(response.data.success){
+                this.setState({showRefund: true})
+            }else{
+                console.log('error',response.data)
+            }
+            
         }).catch((e)=>console.log('error :',e));
     }
 

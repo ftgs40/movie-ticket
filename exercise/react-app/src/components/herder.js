@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 class Herder extends Component {
     
     render() {
-        const cinemaName = 'MY CENIMA';
+        const cinemaName = 'MY CINEMA';
         return (
             <Container>
 
